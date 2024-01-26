@@ -1,28 +1,3 @@
-# hand_assemble_wasm
-
-For learning wasm (wat)
-
-## prerequests
-
-installation of `wabt` and `wasmtime`
-
-- [wabt](https://github.com/WebAssembly/wabt)
-- [wasmtime](https://github.com/bytecodealliance/wasmtime)
-
-## Notation
-
-- for use `print` funtion, it's not a `wasm`, it's a `wasi` format.
-
-## execute wasm
-
-```bash
-wat2wasm xxx.wat  # generate xxx.wasm
-wasmtime xxx.wasm # execute wasm
-```
-
-## example
-
-```clojure
 (module
   ;; Import the necessary WASI functions
   (import "wasi_unstable" "fd_write" (func $fd_write (param i32 i32 i32 i32) (result i32)))
@@ -59,12 +34,3 @@ wasmtime xxx.wasm # execute wasm
   (data (i32.const 114) "Hello, Wasm!\n")
   (data (i32.const 127) "Hello, WASI!\n")
 )
-```
-
-- result
-
-```bash
-Hello, World!
-Hello, Wasm!
-Hello, WASI!
-```
