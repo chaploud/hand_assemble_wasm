@@ -1,0 +1,87 @@
+(module
+  ;; ========== print function ==========
+  (import "wasi_unstable" "fd_write" (func $fd_write (param i32 i32 i32 i32) (result i32)))
+
+  ;; Memory declaration
+  (memory 1)
+  (export "memory" (memory 0))
+
+  ;; Function to print a string with a newline
+  (func $print (export "print") (param $ptr i32) (param $len i32)
+    ;; The iovec array
+    (i32.store (i32.const 0) (local.get $ptr))  ;; iov.iov_base
+    (i32.store (i32.const 4) (local.get $len))  ;; iov.iov_len
+
+    ;; Call fd_write
+    (call $fd_write
+      (i32.const 1)  ;; fd
+      (i32.const 0)  ;; iovs
+      (i32.const 1)  ;; iovs_len
+      (i32.const 20) ;; nwritten
+    )
+    drop
+
+    ;; Add a newline
+    (i32.store (i32.const 0) (i32.const 1000))  ;; iov.iov_base
+    (i32.store (i32.const 4) (i32.const 1))  ;; iov.iov_len
+
+    ;; Call fd_write again
+    (call $fd_write
+      (i32.const 1)  ;; fd
+      (i32.const 0)  ;; iovs
+      (i32.const 1)  ;; iovs_len
+      (i32.const 20) ;; nwritten
+    )
+    drop
+  )
+  ;; The newline character
+  (data (i32.const 1000) "\n")
+  ;; ===================================
+
+  ;; Function to convert an integer to a string
+  (func $int_to_str (param $num i32) (param $buf i32) (result i32)
+    (local $i i32)
+    (local.set $i (local.get $buf))
+    (block $done
+      (loop $loop
+        (local.set $i (i32.sub (local.get $i) (i32.const 1)))
+        (i32.store8 (local.get $i) (i32.add (i32.const 48) (i32.rem_u (local.get $num) (i32.const 10))))
+        (local.set $num (i32.div_u (local.get $num) (i32.const 10)))
+        (br_if $done (i32.eqz (local.get $num)))
+        (br $loop)
+      )
+    )
+    (local.get $i)
+  )
+
+    ;; Function to print an integer
+  (func $print_int (export "print_int") (param $num i32)
+    (local $buf i32)
+    (local.set $buf (i32.const 100))
+    (local.set $buf (call $int_to_str (local.get $num) (local.get $buf)))
+    (call $print (local.get $buf) (i32.sub (i32.const 100) (local.get $buf)))
+  )
+
+  ;; Arithmetic functions
+  (func $add (param $a i32) (param $b i32) (result i32)
+    (i32.add (local.get $a) (local.get $b))
+  )
+  (func $sub (param $a i32) (param $b i32) (result i32)
+    (i32.sub (local.get $a) (local.get $b))
+  )
+  (func $mul (param $a i32) (param $b i32) (result i32)
+    (i32.mul (local.get $a) (local.get $b))
+  )
+  (func $div (param $a i32) (param $b i32) (result i32)
+    (i32.div_s (local.get $a) (local.get $b))
+  )
+
+  ;; Start function
+  (func (export "_start")
+    ;; Call the arithmetic functions and print the results
+    (call $print_int (call $add (i32.const 10) (i32.const 5)))
+    (call $print_int (call $sub (i32.const 10) (i32.const 5)))
+    (call $print_int (call $mul (i32.const 10) (i32.const 5)))
+    (call $print_int (call $div (i32.const 10) (i32.const 5)))
+  )
+)

@@ -1,5 +1,5 @@
 (module
-  ;; Import the necessary WASI functions
+  ;; ========== print function ==========
   (import "wasi_unstable" "fd_write" (func $fd_write (param i32 i32 i32 i32) (result i32)))
 
   ;; Memory declaration
@@ -36,16 +36,34 @@
   )
   ;; The newline character
   (data (i32.const 1000) "\n")
+  ;; ===================================
+
+  ;; Function to convert an integer to a string
+  (func $int_to_str (param $num i32) (param $buf i32) (result i32)
+    (local $i i32)
+    (local.set $i (local.get $buf))
+    (block $done
+      (loop $loop
+        (local.set $i (i32.sub (local.get $i) (i32.const 1)))
+        (i32.store8 (local.get $i) (i32.add (i32.const 48) (i32.rem_u (local.get $num) (i32.const 10))))
+        (local.set $num (i32.div_u (local.get $num) (i32.const 10)))
+        (br_if $done (i32.eqz (local.get $num)))
+        (br $loop)
+      )
+    )
+    (local.get $i)
+  )
+
+    ;; Function to print an integer
+  (func $print_int (export "print_int") (param $num i32)
+    (local $buf i32)
+    (local.set $buf (i32.const 100))
+    (local.set $buf (call $int_to_str (local.get $num) (local.get $buf)))
+    (call $print (local.get $buf) (i32.sub (i32.const 100) (local.get $buf)))
+  )
 
   ;; Start function
   (func (export "_start")
-    (call $print (i32.const 100) (i32.const 13))
-    (call $print (i32.const 113) (i32.const 12))
-    (call $print (i32.const 125) (i32.const 12))
+    (call $print_int (i32.const 12345))
   )
-
-  ;; The strings to print
-  (data (i32.const 100) "Hello, World!")
-  (data (i32.const 113) "Hello, Wasm!")
-  (data (i32.const 125) "Hello, WASI!")
 )
