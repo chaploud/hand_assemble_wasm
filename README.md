@@ -4,9 +4,8 @@ For learning wasm (wat)
 
 ## prerequests
 
-installation of `wabt` and `wasmtime`
+installation of `wasmtime`
 
-- [wabt](https://github.com/WebAssembly/wabt)
 - [wasmtime](https://github.com/bytecodealliance/wasmtime)
 
 ## Notation
@@ -16,8 +15,7 @@ installation of `wabt` and `wasmtime`
 ## execute wasm
 
 ```bash
-wat2wasm xxx.wat  # generate xxx.wasm
-wasmtime xxx.wasm # execute wasm
+wasmtime xxx.wat # execute wat
 ```
 
 ## example
