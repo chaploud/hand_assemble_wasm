@@ -195,6 +195,36 @@ table.fill                 ;; Fill a portion of a table with a specific element
 ;; Import the proc_exit function from the wasi_snapshot_preview1 module
 (import "wasi_snapshot_preview1" "proc_exit" (func $proc_exit (param i32)))
 
+;; Import the fd_prestat_get function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_prestat_get" (func $fd_prestat_get (param i32 i32) (result i32)))
+
+;; Import the fd_prestat_dir_name function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_prestat_dir_name" (func $fd_prestat_dir_name (param i32 i32 i32) (result i32)))
+
+;; Import the path_open function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "path_open" (func $path_open (param i32 i32 i32 i32 i32 i32 i32 i32 i32) (result i32)))
+
+;; Import the fd_datasync function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_datasync" (func $fd_datasync (param i32) (result i32)))
+
+;; Import the fd_sync function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_sync" (func $fd_sync (param i32) (result i32)))
+
+;; Import the fd_write function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_write" (func $fd_write (param i32 i32 i32 i32) (result i32)))
+
+;; Import the fd_advise function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_advise" (func $fd_advise (param i32 i64 i64 i32) (result i32)))
+
+;; Import the fd_allocate function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_allocate" (func $fd_allocate (param i32 i64 i64) (result i32)))
+
+;; Import the fd_tell function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_tell" (func $fd_tell (param i32 i32) (result i32)))
+
+;; Import the fd_filestat_get function from the wasi_snapshot_preview1 module
+(import "wasi_snapshot_preview1" "fd_filestat_get" (func $fd_filestat_get (param i32 i32) (result i32)))
+
 ;; Numeric operations
 i32.clz                    ;; Count leading zeros in a 32-bit integer
 i32.ctz                    ;; Count trailing zeros in a 32-bit integer
