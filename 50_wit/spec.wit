@@ -1,0 +1,143 @@
+// line comment
+/* block comment */
+/// line doc comment
+print-hello: func();
+
+/**
+block doc comment
+*/
+print-hello: func();
+
+kebab-case
+is--invalid
+%interface
+12invalid
+あinvalid
+all-lowercase
+ALL-UPPERCASE
+WIT-demo
+interface // cannot use keywords as identifiers
+
+// Primitive types
+bool
+// signed integers
+s8
+s16
+s32
+s64
+// unsigned integers
+u8
+u16
+u32
+u64
+// floating point numbers
+float32
+float64
+// unicode character
+char
+// unicode string
+string
+// list (like Vec)
+list<u8>
+list<customer>
+option<customer>
+result<http-response, http-error>
+result<u32> // no error case
+result<_, u32> // no success case
+result // no both case
+tuple<u64, string> (like tuple)
+tuple<u64, string, u64>
+
+// user defined type
+record customer {  // like struct
+    id: u64,
+    name: string,
+    picture: option<list<u8>>,
+    account-manager: employee,
+}
+
+// variants (like enum)
+variant allowed-destinations {
+    none,
+    any,
+    restricted(list<address>)
+}
+
+// enum
+enum color {
+    red,
+    green,
+    blue,
+}
+
+// flags
+flags allowed-meethods {
+    get,
+    post,
+    put,
+    delete,
+}
+
+// type aliases
+type buffer = list<u8>
+type http-result = result<http-response, http-error>
+
+// functions
+do-nothing: func();
+
+print: func(message: string);
+
+add: func(a: u64, b: u64) -> u64;
+lookup: func(store: kv-store, key: string) -> option<string>;
+
+// multiple return values
+get-customers-paged: func(cont: continuation-token) -> (customers: list<customer>, cont: continuation-token);
+
+interface canvas {
+    type canvas-id = u64;
+
+    record point {
+        x: u32,
+        y: u32,
+    }
+
+    draw-line: func(canvas: canvas-id, from: point, to: point);
+}
+
+interface types {
+    type dimension = u32;
+    record point {
+        x: dimension,
+        y: dimension,
+    }
+}
+
+interface canvas {
+    use types.{dimension, point}; // use
+    type canvas-id = u64;
+    draw-line: func(canvas: canvas-id, from: point, to: point, thickness: dimension);
+}
+
+// world
+interface printer {
+    print: func(text: string);
+}
+
+interface error-reporter {
+    report-error: func(error-message: string);
+}
+
+world multi-function-device {
+    // The component implements the `printer` interface
+    export printer;
+    // The component implements the `scan` function
+    export scan: func() -> list<u8>;
+    // The component needs to be supplied with an `error-reporter`
+    import error-reporter;
+}
+
+// Interfaces from other packages
+world http-proxy {
+    export wasi:http/incoming-handler;
+    import wasi:http/outgoing-handler;
+}
